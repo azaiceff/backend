@@ -1,0 +1,2311 @@
+{
+	"info": {
+		"_postman_id": "5bd82a37-af66-4a85-9d1c-7fe0a27a1233",
+		"name": "Homework",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23109780"
+	},
+	"item": [
+		{
+			"name": "Search Recipes",
+			"item": [
+				{
+					"name": "Search Recipes",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (10 - 3)) + 3);\r",
+									"pm.collectionVariables.set(\"offset\", Math.floor(Math.random() * (1000 - 1)) + 1);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"pm.test('Number eql leng', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"});\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&offset={{offset}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "offset",
+									"value": "{{offset}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "minCholesterolmaxVitaminB12minFolate",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (10 - 3)) + 3);\r",
+									"pm.collectionVariables.set(\"offset\", Math.floor(Math.random() * (1000 - 1)) + 1);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = Number(jsonData.length);\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"let idRecipe;\r",
+									"if(leng > 0){\r",
+									"    pm.test('Number eql leng', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"    });\r",
+									"    idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"    pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									"    pm.test('Всего найдено ' + leng + ' рецептов', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"    });\r",
+									"    for(i = 0; i < leng; i++){\r",
+									"        let name = jsonData[i].nutrition.nutrients[0].name;\r",
+									"        pm.test(\"Проверяем название Cholesterol\", function(){\r",
+									"        pm.expect(name).to.eql(\"Cholesterol\");\r",
+									"        });\r",
+									"        let amount = Number(jsonData[i].nutrition.nutrients[1].amount);\r",
+									"        let maxVitaminB12 = Number(pm.variables.get(\"maxVitaminB12\"));\r",
+									"        pm.test(\"Проверяем содержание Витамина B12\", function(){\r",
+									"        pm.expect(maxVitaminB12).to.be.above(amount);\r",
+									"        });\r",
+									"        let unit = jsonData[i].nutrition.nutrients[2].unit;\r",
+									"        pm.test(\"Проверяем единицу измерения 'µg'\", function(){\r",
+									"        pm.expect(unit).to.eql(\"µg\");\r",
+									"        });   \r",
+									"    }\r",
+									"}else pm.test(\"No Search Recipes\", true)\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&offset={{offset}}&minCholesterol=1&maxVitaminB12={{maxVitaminB12}}&minFolate={{minFolate}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "offset",
+									"value": "{{offset}}"
+								},
+								{
+									"key": "minCholesterol",
+									"value": "1"
+								},
+								{
+									"key": "maxVitaminB12",
+									"value": "{{maxVitaminB12}}"
+								},
+								{
+									"key": "minFolate",
+									"value": "{{minFolate}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "minCarbs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (20 - 3)) + 3);\r",
+									"pm.collectionVariables.set(\"offset\", Math.floor(Math.random() * (300 - 1)) + 1);\r",
+									"pm.collectionVariables.set(\"minCarbs\", Math.floor(Math.random() * (100 - 10)) + 10);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"\r",
+									"// Если поиск был успешен, из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"//для дальнейшего использования. Заодно во всех найденных результатах проверим количество углеводов\r",
+									"if(leng > 0){\r",
+									"    let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"    pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									"\r",
+									"    pm.test('Всего найдено ' + leng + ' рецептов', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"    });\r",
+									"\r",
+									"    for(i = 0; i < leng; i++){\r",
+									"        let amount = jsonData[i].nutrition.nutrients[0].amount;\r",
+									"        pm.test(\"Проверяем количество углеводов Carbs > minCarbs\", function(){\r",
+									"        pm.expect(amount).to.be.above(pm.collectionVariables.get(\"minCarbs\"));\r",
+									"        })\r",
+									"    }\r",
+									"}else pm.test(\"No Search Recipes\", true);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&minCarbs={{minCarbs}}&offset={{offset}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "minCarbs",
+									"value": "{{minCarbs}}"
+								},
+								{
+									"key": "offset",
+									"value": "{{offset}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "maxProtein",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (20 - 3)) + 3);\r",
+									"pm.collectionVariables.set(\"offset\", Math.floor(Math.random() * (3000 - 1)) + 1);\r",
+									"pm.collectionVariables.set(\"maxProtein\", Math.floor(Math.random() * (10 - 1)) + 1);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"\r",
+									"// Если поиск был успешен, из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"//для дальнейшего использования. Заодно во всех найденных результатах проверим количество белков\r",
+									"if(leng > 0){\r",
+									"    let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"    pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									"\r",
+									"    pm.test('Всего найдено ' + leng + ' рецептов', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"    });\r",
+									"\r",
+									"    for(i = 0; i < leng; i++){\r",
+									"        let amount = jsonData[i].nutrition.nutrients[0].amount;\r",
+									"        pm.test(\"Проверяем содержание белка Protein < maxProtein\", function(){\r",
+									"        pm.expect(pm.collectionVariables.get(\"maxProtein\") + 1).to.be.above(amount);\r",
+									"        })\r",
+									"    }\r",
+									"}else pm.test(\"No Search Recipes\", true);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&offset={{offset}}&maxProtein={{maxProtein}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "offset",
+									"value": "{{offset}}"
+								},
+								{
+									"key": "maxProtein",
+									"value": "{{maxProtein}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "maxReadyTime",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (30 - 3)) + 3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"if(leng == numberFromResponse){\r",
+									"     pm.test(\"Number === leng\")\r",
+									"}else pm.test(\"Number >= leng\", function() {\r",
+									"    pm.expect(numberFromResponse).to.be.above(leng)\r",
+									"})\r",
+									"\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									"\r",
+									"for(i = 0; i < leng; i++){\r",
+									"    pm.test(\"Body matches string\", function () {\r",
+									"\t    pm.expect((jsonData[i].title).toLowerCase()).that.include((pm.variables.get(\"titleMatch\")).toLowerCase());\r",
+									"    });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&titleMatch={{titleMatch}}&ignorePantry=true&maxReadyTime=40",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "titleMatch",
+									"value": "{{titleMatch}}"
+								},
+								{
+									"key": "ignorePantry",
+									"value": "true"
+								},
+								{
+									"key": "maxReadyTime",
+									"value": "40"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Salad",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (10 - 3)) + 3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"pm.test('Number eql leng', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"});\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&type=salad",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "type",
+									"value": "salad"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "breakfast",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (10 - 3)) + 3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"pm.test('Number eql leng', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"});\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&type=breakfast",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "type",
+									"value": "breakfast"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "excludeCuisineGreek",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (10 - 3)) + 3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"pm.test('Number eql leng', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"});\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&excludeCuisine=greek",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "excludeCuisine",
+									"value": "greek"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "diet",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (69 - 3)) + 3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"pm.test('Number eql leng', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"});\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&diet=Ketogenic",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "diet",
+									"value": "Ketogenic"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "titleMatch",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (30 - 3)) + 3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"if(leng == numberFromResponse){\r",
+									"     pm.test(\"Number === leng\")\r",
+									"}else pm.test(\"Number >= leng\", function() {\r",
+									"    pm.expect(numberFromResponse).to.be.above(leng)\r",
+									"})\r",
+									"\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									"\r",
+									"for(i = 0; i < leng; i++){\r",
+									"    pm.test(\"Body matches string\", function () {\r",
+									"\t    pm.expect((jsonData[i].title).toLowerCase()).that.include((pm.variables.get(\"titleMatch\")).toLowerCase());\r",
+									"    });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&titleMatch={{titleMatch}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "titleMatch",
+									"value": "{{titleMatch}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addRecipeInformation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (30 - 3)) + 3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"if(leng == numberFromResponse){\r",
+									"     pm.test(\"Number === leng\")\r",
+									"}else pm.test(\"Number >= leng\", function() {\r",
+									"    pm.expect(numberFromResponse).to.be.above(leng)\r",
+									"})\r",
+									"\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									"\r",
+									"for(i = 0; i < leng; i++){\r",
+									"    pm.test(\"Body matches string\", function () {\r",
+									"\t    pm.expect((jsonData[i].title).toLowerCase()).that.include((pm.variables.get(\"titleMatch\")).toLowerCase());\r",
+									"    });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&titleMatch={{titleMatch}}&ignorePantry=true&maxReadyTime=40&addRecipeInformation=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "titleMatch",
+									"value": "{{titleMatch}}"
+								},
+								{
+									"key": "ignorePantry",
+									"value": "true"
+								},
+								{
+									"key": "maxReadyTime",
+									"value": "40"
+								},
+								{
+									"key": "addRecipeInformation",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addRecipeNutrition",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (30 - 3)) + 3);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"if(leng == numberFromResponse){\r",
+									"     pm.test(\"Number === leng\")\r",
+									"}else pm.test(\"Number >= leng\", function() {\r",
+									"    pm.expect(numberFromResponse).to.be.above(leng)\r",
+									"})\r",
+									"\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									"\r",
+									"for(i = 0; i < leng; i++){\r",
+									"    pm.test(\"Body matches string\", function () {\r",
+									"\t    pm.expect((jsonData[i].title).toLowerCase()).that.include((pm.variables.get(\"titleMatch\")).toLowerCase());\r",
+									"    });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&titleMatch={{titleMatch}}&ignorePantry=true&maxReadyTime=40&addRecipeNutrition=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "titleMatch",
+									"value": "{{titleMatch}}"
+								},
+								{
+									"key": "ignorePantry",
+									"value": "true"
+								},
+								{
+									"key": "maxReadyTime",
+									"value": "40"
+								},
+								{
+									"key": "addRecipeNutrition",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "maxCaffeine No Search",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (20 - 3)) + 3);\r",
+									"pm.collectionVariables.set(\"offset\", Math.floor(Math.random() * (3000 - 1)) + 1);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"pm.test(\"No Search Recipes\", function () {\r",
+									"    pm.expect(jsonData.length).to.eql(0);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&offset={{offset}}&maxCaffeine=-2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "offset",
+									"value": "{{offset}}"
+								},
+								{
+									"key": "maxCaffeine",
+									"value": "-2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "minCholesterol",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (10 - 3)) + 3);\r",
+									"pm.collectionVariables.set(\"offset\", Math.floor(Math.random() * (1000 - 1)) + 1);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"pm.test('Number eql leng', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"});\r",
+									"if(leng > 0){\r",
+									"    let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"    pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									"\r",
+									"    pm.test('Всего найдено ' + leng + ' рецептов', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"    });\r",
+									"\r",
+									"    for(i = 0; i < leng; i++){\r",
+									"        let name = jsonData[i].nutrition.nutrients[0].name;\r",
+									"        pm.test(\"Проверяем название Cholesterol\", function(){\r",
+									"        pm.expect(name).to.eql(\"Cholesterol\");\r",
+									"        })\r",
+									"    }\r",
+									"}else pm.test(\"No Search Recipes\", true);\r",
+									"\r",
+									"\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&offset={{offset}}&minCholesterol=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "offset",
+									"value": "{{offset}}"
+								},
+								{
+									"key": "minCholesterol",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "minCholesterolAndmaxVitaminB12",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (10 - 3)) + 3);\r",
+									"pm.collectionVariables.set(\"offset\", Math.floor(Math.random() * (1000 - 1)) + 1);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"pm.test('Number eql leng', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"});\r",
+									"if(leng > 0){\r",
+									"    let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"    pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									"\r",
+									"    pm.test('Всего найдено ' + leng + ' рецептов', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"    });\r",
+									"\r",
+									"    for(i = 0; i < leng; i++){\r",
+									"        let name = jsonData[i].nutrition.nutrients[0].name;\r",
+									"        pm.test(\"Проверяем название Cholesterol\", function(){\r",
+									"        pm.expect(name).to.eql(\"Cholesterol\");\r",
+									"        })\r",
+									"        let amount = Number(jsonData[i].nutrition.nutrients[1].amount)\r",
+									"        let maxVitaminB12 = Number(pm.variables.get(\"maxVitaminB12\"))\r",
+									"        pm.test(\"Проверяем содержание Витамина B12\", function(){\r",
+									"        pm.expect(maxVitaminB12).to.be.above(amount)\r",
+									"        })\r",
+									"    }\r",
+									"}else pm.test(\"No Search Recipes\", true);\r",
+									"\r",
+									"\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&offset={{offset}}&minCholesterol=1&maxVitaminB12={{maxVitaminB12}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "offset",
+									"value": "{{offset}}"
+								},
+								{
+									"key": "minCholesterol",
+									"value": "1"
+								},
+								{
+									"key": "maxVitaminB12",
+									"value": "{{maxVitaminB12}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Classify Cuisine",
+			"item": [
+				{
+					"name": "NoAuthNegativeTest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 401\", () => {stat(401)});\r",
+									"pm.test(\"Status code is Unauthorized\", () => {stat('Unauthorized')});\r",
+									"\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "BLT Pizza",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NegativeTest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 500\", () => {stat(500)});\r",
+									"pm.test(\"Status code is Internal Server Error\", () => {stat('Internal Server Error')});\r",
+									"\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "BLT Pizza",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=ru",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "ru"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dinner Tonight: Grilled Romesco-Style Pork",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});\r",
+									"pm.test('\"Spanish\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"Spanish\"\r",
+									"    );\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Dinner Tonight: Grilled Romesco-Style Pork",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sesame Flank Steak Salad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});\r",
+									"pm.test('\"European\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    'European'\r",
+									"    );\r",
+									"});\r",
+									"pm.test('\"Italian\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"Italian\"\r",
+									"    );\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Sesame Flank Steak Salad",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Italian Tuna Pasta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});\r",
+									"pm.test('\"Mediterranean\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"Mediterranean\"\r",
+									"    );\r",
+									"});\r",
+									"pm.test('\"European\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    'European'\r",
+									"    );\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Italian Tuna Pasta",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gyros",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});\r",
+									"pm.test('\"Greek\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"Greek\"\r",
+									"    );\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Gyros",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BLT Pizza",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});\r",
+									"pm.test('\"European\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"European\"\r",
+									"    );\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "BLT Pizza",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creme Brulee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});\r",
+									"pm.test('\"Mediterranean\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"Mediterranean\"\r",
+									"    );\r",
+									"});\r",
+									"pm.test('\"French\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"French\"\r",
+									"    );\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Creme Brulee",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Red Robin French Onion Soup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});\r",
+									"pm.test('\"Mediterranean\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"Mediterranean\"\r",
+									"    );\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Red Robin French Onion Soup",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Wonton Soup, Cup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});\r",
+									"pm.test('\"Asian\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"Asian\"\r",
+									"    );\r",
+									"});pm.test('\"Chinese\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"Chinese\"\r",
+									"    );\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Wonton Soup, Cup",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Classic Spanish Recipes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});\r",
+									"pm.test('\"European\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    'European'\r",
+									"    );\r",
+									"});\r",
+									"pm.test('\"Spanish\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"Spanish\"\r",
+									"    );\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Classic Spanish Recipes",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Taco Villa Salad Ole",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});\r",
+									"pm.test('\"Mexican\"', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.includes(\r",
+									"    \"Mexican\"\r",
+									"    );\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Taco Villa Salad Ole",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine?language=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RandomRequest",
+			"item": [
+				{
+					"name": "Korean",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"number\", Math.floor(Math.random() * (25 - 3)) + 3);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json().results;\r",
+									"pm.test('results to.not.null', function () {\r",
+									"    pm.expect(jsonData).to.not.be.null;\r",
+									"});\r",
+									"let leng = jsonData.length;\r",
+									"let numberFromResponse = pm.response.json().number;\r",
+									"pm.test('Number check', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(pm.collectionVariables.get(\"number\"));\r",
+									"});\r",
+									"pm.test('Number eql leng', function () {\r",
+									"    pm.expect(numberFromResponse).to.eql(leng);\r",
+									"});\r",
+									"// из респонса случайным образом выбираем id рецепта и записываем его в переменные коллекции\r",
+									"let idRecipe = jsonData[Math.floor(Math.random() * leng)].id;\r",
+									"pm.collectionVariables.set(\"idRecipe\", idRecipe);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/complexSearch?number={{number}}&cuisine=Korean",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"complexSearch"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "{{number}}"
+								},
+								{
+									"key": "cuisine",
+									"value": "Korean"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recipe Information",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"let idFromResponse = responseJson.id;\r",
+									"pm.test('Id check', function () {\r",
+									"    pm.expect(idFromResponse).to.eql(pm.collectionVariables.get(\"idRecipe\"));\r",
+									"});\r",
+									"pm.collectionVariables.set(\"title\", responseJson.title);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/recipes/{{idRecipe}}/information?includeNutrition=false",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"{{idRecipe}}",
+								"information"
+							],
+							"query": [
+								{
+									"key": "includeNutrition",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Classify Cuisine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"stat = (a) => {pm.response.to.have.status (a)};\r",
+									"pm.test(\"Status code is 200\", () => {stat(200)});\r",
+									"pm.test(\"Status code is OK\", () => {stat('OK')});\r",
+									"\r",
+									"let responseJson = pm.response.json();\r",
+									"pm.test('object is.not.empty', function () {\r",
+									"    pm.expect(responseJson.cuisines).that.is.not.empty\r",
+									"});\r",
+									"pm.test(\"confidence within(0, 1)\", function () {\r",
+									"    pm.expect(responseJson.confidence).to.have.within(0, 1);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "{{title}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipes/cuisine",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"recipes",
+								"cuisine"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "97d0e48d956147ebabea5c01df91a64e",
+				"type": "string"
+			},
+			{
+				"key": "in",
+				"value": "query",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "apiKey",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://api.spoonacular.com",
+			"type": "string"
+		},
+		{
+			"key": "number",
+			"value": ""
+		},
+		{
+			"key": "offset",
+			"value": ""
+		},
+		{
+			"key": "idRecipe",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "title",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "minCarbs",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "maxProtein",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "titleMatch",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "maxVitaminB12",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "minFolate",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
