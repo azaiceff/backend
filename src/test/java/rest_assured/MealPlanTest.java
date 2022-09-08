@@ -25,10 +25,10 @@ public class MealPlanTest extends AbstractTest {
     public void aTest() {
         Response response = given()
                 .queryParam("apiKey", getApiKey())
-                .queryParam("hash", prop.get("hash"))
+                .queryParam("hash", propGlobal.get("hash"))
                 .body(getBody())
                 .when()
-                .post(getBaseUrl() + "mealplanner/" + prop.get("username") + "/templates");
+                .post(getBaseUrl() + "mealplanner/" + propGlobal.get("username") + "/templates");
         assertThat(response.getStatusCode(), is(200));
         assertEquals(response.getBody().jsonPath().get("status").toString(), "success", "Add Plan - \"success\"");
     }
@@ -37,9 +37,9 @@ public class MealPlanTest extends AbstractTest {
     public void bTest() {
         Response response = given()
                 .queryParam("apiKey", getApiKey())
-                .queryParam("hash", prop.get("hash"))
+                .queryParam("hash", propGlobal.get("hash"))
                 .when()
-                .get(getBaseUrl() + "mealplanner/" + prop.get("username") + "/templates");
+                .get(getBaseUrl() + "mealplanner/" + propGlobal.get("username") + "/templates");
         assertThat(response.getStatusCode(), is(200));
         List<HashMap<String, Object>> responseJson = response.getBody().jsonPath().getList("templates");
         if (!responseJson.isEmpty()) {
@@ -54,8 +54,8 @@ public class MealPlanTest extends AbstractTest {
     private void deletePlane(int numberPlane) {
         given()
                 .queryParam("apiKey", getApiKey())
-                .queryParam("hash", prop.get("hash"))
-                .delete(getBaseUrl() + "mealplanner/" + prop.get("username") + "/templates/" + prop.get("idPlan" + numberPlane))
+                .queryParam("hash", propGlobal.get("hash"))
+                .delete(getBaseUrl() + "mealplanner/" + propGlobal.get("username") + "/templates/" + prop.get("idPlan" + numberPlane))
                 .then()
                 .statusCode(200);
     }

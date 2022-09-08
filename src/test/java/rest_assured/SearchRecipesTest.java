@@ -58,7 +58,7 @@ public class SearchRecipesTest extends AbstractTest {
         Response response = given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("number", prop.get("number"))
-                .queryParam("titleMatch", prop.get("titleMatch"))
+                .queryParam("titleMatch", propGlobal.get("titleMatch"))
                 .when()
                 .get(getBaseUrl() + "recipes/complexSearch");
         assertThat(response.getStatusCode(), is(200));
@@ -69,7 +69,7 @@ public class SearchRecipesTest extends AbstractTest {
         List<HashMap<String, String>> resultsJson = response.getBody().jsonPath().get("results");
         assertTrue(numberFromResponse >= resultsJson.size(), "Number >= length");
         for (HashMap<String, String> stringHashMap : resultsJson) {
-            assertTrue(stringHashMap.get("title").toLowerCase().contains((CharSequence) prop.get("titleMatch")));
+            assertTrue(stringHashMap.get("title").toLowerCase().contains((CharSequence) propGlobal.get("titleMatch")));
         }
     }
     @Test
@@ -119,7 +119,7 @@ public class SearchRecipesTest extends AbstractTest {
         Response response = given()
                 .queryParam("apiKey", getApiKey())
                 .queryParam("number", prop.get("number"))
-                .queryParam("titleMatch", prop.get("titleMatch"))
+                .queryParam("titleMatch", propGlobal.get("titleMatch"))
                 .queryParam("ignorePantry", "True")
                 .queryParam("maxReadyTime", "40")
                 .queryParam("addRecipeInformation", "True")
@@ -135,7 +135,7 @@ public class SearchRecipesTest extends AbstractTest {
         for (HashMap<String, String> stringHashMap : resultsJson) {
             String title = stringHashMap.get("title");
             logger.info("addRecipeInformationTest - Title: " + title);
-            assertTrue(title.toLowerCase().contains((CharSequence) prop.get("titleMatch")));
+            assertTrue(title.toLowerCase().contains((CharSequence) propGlobal.get("titleMatch")));
         }
     }
 }
