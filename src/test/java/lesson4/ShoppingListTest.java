@@ -1,6 +1,5 @@
 package lesson4;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lesson4.responses.ShoppingList.add.AddShoppingList;
 import lesson4.responses.ShoppingList.get.ShoppingList;
 import org.junit.FixMethodOrder;
@@ -11,10 +10,7 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.restassured.RestAssured.given;
@@ -26,9 +22,9 @@ public class ShoppingListTest extends AbstractTest{
     private static final Logger logger = LoggerFactory.getLogger(rest_assured.MealPlanTest.class);
     @Test
     @DisplayName("Get Shopping List and Delete")
-    public void bTeat() throws IOException {
+    public void bTest() throws IOException {
         ShoppingList response = given()
-                .spec(getMealPlanTest())
+                .spec(getRequestMealPlanTest())
                 .when()
                 .get(getBaseUrl() + "mealplanner/" + propGlobal.get("username") + "/shopping-list")
                 .then()
@@ -57,9 +53,9 @@ public class ShoppingListTest extends AbstractTest{
 
     @RepeatedTest(3)
     @DisplayName("Add to Shopping List")
-    public void aTeat() throws IOException {
+    public void aTest() throws IOException {
         AddShoppingList response = given()
-                .spec(getMealPlanTest())
+                .spec(getRequestMealPlanTest())
                 .body(getBodyFromFile("src/main/resources/bodyAddShoppingList.json"))
                 .when()
                 .post(getBaseUrl() + "mealplanner/" + propGlobal.get("username") + "/shopping-list/items")
@@ -74,18 +70,9 @@ public class ShoppingListTest extends AbstractTest{
         assertEquals(response.getMeasures().getMetric().getUnit(), "pkg");
         assertFalse(response.getPantryItem());
     }
-
-    private void createFileResponse(Object response, String path) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
-        File file = new File(path);
-        Files.write(Paths.get(String.valueOf(file)), jsonString.getBytes());
-    }
-
-
     private void deleteList(int numberList) {
         given()
-                .spec(getMealPlanTest())
+                .spec(getRequestMealPlanTest())
                 .when()
                 .delete(getBaseUrl() + "mealplanner/" + propGlobal.get("username") + "/shopping-list/items/" + prop.get("idItems" + numberList))
                 .then()

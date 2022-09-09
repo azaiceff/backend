@@ -13,6 +13,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.Random;
 
@@ -66,13 +68,13 @@ public class AbstractTest {
     }
     RequestSpecification getRequestSpecificationClassifyCuisine(String language, String title){
         return new RequestSpecBuilder()
-                .addQueryParam("apiKey", getApiKey())
+                .addQueryParam("apiKey", apiKey)
                 .addQueryParam("language", language)
                 .setContentType("application/x-www-form-urlencoded")
                 .addFormParam("title", title)
                 .build();
     }
-    RequestSpecification getMealPlanTest(){
+    RequestSpecification getRequestMealPlanTest(){
         return new RequestSpecBuilder()
                 .addQueryParam("apiKey", apiKey)
                 .addQueryParam("hash", propGlobal.get("hash"))
@@ -84,6 +86,12 @@ public class AbstractTest {
         ObjectMapper objectMapper = new ObjectMapper();
         MealPlan mealPlan = objectMapper.readValue(file, MealPlan.class);
         return objectMapper.writeValueAsString(mealPlan);
+    }
+    void createFileResponse(Object response, String path) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
+        File file = new File(path);
+        Files.write(Paths.get(String.valueOf(file)), jsonString.getBytes());
     }
 }
 

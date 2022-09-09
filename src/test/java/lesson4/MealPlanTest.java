@@ -23,7 +23,7 @@ public class MealPlanTest extends AbstractTest {
     @DisplayName("Add Meal Plan Template")
     public void aTest() throws IOException {
         Response response = given()
-                .spec(getMealPlanTest())
+                .spec(getRequestMealPlanTest())
                 .body(getBodyFromFile("src/main/resources/MealPlanBodyReq.json"))
                 .when()
                 .post(getBaseUrl() + "mealplanner/" + propGlobal.get("username") + "/templates")
@@ -37,7 +37,7 @@ public class MealPlanTest extends AbstractTest {
     @DisplayName("Delete Meal Plan Template")
     public void bTest() {
         Response response = given()
-                .spec(getMealPlanTest())
+                .spec(getRequestMealPlanTest())
                 .when()
                 .get(getBaseUrl() + "mealplanner/" + propGlobal.get("username") + "/templates")
                 .then()
@@ -56,7 +56,7 @@ public class MealPlanTest extends AbstractTest {
 
     private void deletePlane(int numberPlane) {
         given()
-                .spec(getMealPlanTest())
+                .spec(getRequestMealPlanTest())
                 .delete(getBaseUrl() + "mealplanner/" + propGlobal.get("username") + "/templates/" + prop.get("idPlan" + numberPlane))
                 .then()
                 .spec(getResponseSpecification());
