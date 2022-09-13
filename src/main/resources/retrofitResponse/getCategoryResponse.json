@@ -1,0 +1,15 @@
+{
+  "id" : 1,
+  "title" : "Food",
+  "products" : [ {
+    "id" : 1,
+    "title" : "Milk",
+    "price" : 95,
+    "categoryTitle" : "Food"
+  }, {
+    "id" : 3,
+    "title" : "Cheese",
+    "price" : 360,
+    "categoryTitle" : "Food"
+  } ]
+}
